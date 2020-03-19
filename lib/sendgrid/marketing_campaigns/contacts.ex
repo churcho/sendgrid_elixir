@@ -78,7 +78,7 @@ defmodule SendGrid.Contacts do
     end
   end
 
-  # Handles the result when delete is queued
+  # Handles the result when upsert is queued
   defp handle_upsert_contact_result(%{status: 202}) do
     :ok
   end
