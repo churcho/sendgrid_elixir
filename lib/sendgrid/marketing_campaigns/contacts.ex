@@ -11,7 +11,7 @@ defmodule SendGrid.Contacts do
   * `:api_key` - API key to use with the request.
   """
   @spec find(String.t(), [SendGrid.api_key()]) ::
-          {:ok, String.t() | nil} | {:error, [String.t(), ...]}
+          {:ok, map | nil} | {:error, [String.t(), ...]}
   def find(email, opts \\ []) when is_list(opts) do
     with {:ok, response} <-
            SendGrid.post(@base_api_url <> "/search", %{"query" => "email LIKE '#{email}'"}, opts) do
@@ -20,8 +20,8 @@ defmodule SendGrid.Contacts do
   end
 
   # Handles the result when it's valid and contact is found.
-  defp handle_find_contact_result(%{status: 200, body: %{"result" => [%{"id" => id}]}}) do
-    {:ok, id}
+  defp handle_find_contact_result(%{status: 200, body: %{"result" => [%{"id" => _} = result]}}) do
+    {:ok, result}
   end
 
   # Handles the result when it's valid and no contact is found.
