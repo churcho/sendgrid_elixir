@@ -102,6 +102,7 @@ defmodule SendGrid.Email do
             attachments: nil,
             dynamic_template_data: nil,
             sandbox: false,
+            mail_send_args: nil,
             __phoenix_view__: nil,
             __phoenix_layout__: nil
 
@@ -122,6 +123,7 @@ defmodule SendGrid.Email do
           headers: nil | headers(),
           attachments: nil | [attachment],
           sandbox: boolean(),
+          mail_send_args: nil | map,
           __phoenix_view__: nil | atom,
           __phoenix_layout__:
             nil | %{optional(:text) => String.t(), optional(:html) => String.t()}
@@ -420,6 +422,23 @@ defmodule SendGrid.Email do
   end
 
   @doc """
+  Adds additional args to the send request for the email.
+
+  If an argument for a given name is already set, it will be replaced when adding
+  a argument with the same name.
+
+  ## Examples
+
+  Email.add_mail_send_arg(%Email{}, :ip_pool_name, "My Pool")
+
+  """
+  @spec add_mail_send_arg(t, atom | String.t(), term) :: t
+  def add_mail_send_arg(%Email{mail_send_args: mail_send_args} = email, arg_name, arg_value) do
+    mail_send_args = Map.put(mail_send_args || %{}, arg_name, arg_value)
+    %Email{email | mail_send_args: mail_send_args}
+  end
+
+  @doc """
   Sets a future date of when to send the email.
 
   ## Examples
@@ -694,8 +713,12 @@ defmodule SendGrid.Email do
   end
 
   defimpl Jason.Encoder do
+    email_keys = Map.keys(%Email{})
+
     def encode(%Email{personalizations: [_ | _]} = email, opts) do
-      params = %{
+      mail_send_args = Map.drop(email.mail_send_args || %{}, unquote(email_keys))
+
+      %{
         personalizations: email.personalizations,
         from: email.from,
         subject: email.subject,
@@ -711,8 +734,8 @@ defmodule SendGrid.Email do
           }
         }
       }
-
-      Jason.Encode.map(params, opts)
+      |> Map.merge(mail_send_args)
+      |> Jason.Encode.map(opts)
     end
 
     def encode(%Email{personalizations: nil} = email, opts) do
