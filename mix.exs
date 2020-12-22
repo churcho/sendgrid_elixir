@@ -41,12 +41,12 @@ defmodule SendGrid.Mixfile do
 
   defp deps do
     [
-      {:dialyxir, "~> 1.0.0-rc.4", only: [:dev, :test], runtime: false},
-      {:earmark,      "~> 1.2",  only: :dev},
-      {:ex_doc,       "~> 0.19", only: :dev},
+      {:dialyxir, "~> 1.0.0", only: [:dev, :test], runtime: false},
+      {:earmark, "~> 1.2",  only: :dev},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:jason, "~> 1.1"},
-      {:phoenix,      "~> 1.2", only: :test},
       {:phoenix_html, "~> 2.9", only: :test},
+      {:phoenix, "~> 1.2", only: :test},
       {:tesla, "~> 1.2"}
     ]
   end
@@ -68,7 +68,8 @@ defmodule SendGrid.Mixfile do
       files: ["lib", "mix.exs", "LICENSE", "README.md"],
       maintainers: ["Alex Garibay"],
       licenses: ["MIT"],
-      links: %{"GitHub" => project_url()}
+      links: %{"GitHub" => project_url()},
+      organization: "genesisblock"
     ]
   end
 
