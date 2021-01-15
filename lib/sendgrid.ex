@@ -128,6 +128,8 @@ defmodule SendGrid do
   defp api_key(opts) do
     api_key = Keyword.get(opts, :api_key) || runtime_key()
 
+    Logger.info("api_key result is #{api_key}")
+
     unless api_key do
       raise RuntimeError, """
       No API key is configured for SendGrid. Update your config your pass in a
@@ -147,7 +149,9 @@ defmodule SendGrid do
   end
 
   defp runtime_key do
-    Application.get_env(:sendgrid, :api_key)
+    key = Application.get_env(:sendgrid, :api_key)
+    Logger.info("Sengrid API Key is #{key}")
+    key
   end
 
   defp build_client(api_key) do
