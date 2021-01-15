@@ -147,10 +147,7 @@ defmodule SendGrid do
   end
 
   defp runtime_key do
-    case Application.get_env(:sendgrid, :api_key) do
-      {:system, env_key} -> System.get_env(env_key)
-      key -> key
-    end
+    Application.get_env(:sendgrid, :api_key)
   end
 
   defp build_client(api_key) do
